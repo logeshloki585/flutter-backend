@@ -7,6 +7,7 @@ const router = express.Router();
 // Add Post route
 router.post('/add', async (req, res) => {
   const { title, url, content } = req.body;
+   console.log( title, url, content );
   try {
     const post = new Post({ title, url, content });
     await post.save();
