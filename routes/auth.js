@@ -8,7 +8,7 @@ const JWT_SECRET = process.env.JWT_SECRET; // Get JWT secret from environment va
 
 // Signup route
 router.post('/signup', async (req, res) => {
-  const { email, password } = req.body;
+  const { username,email, password } = req.body;
   try {
     // Check if user with given email already exists
     const existingUser = await User.findOne({ email });
@@ -17,7 +17,7 @@ router.post('/signup', async (req, res) => {
     }
 
     // Create new user if email is not taken
-    const user = new User({ email, password });
+    const user = new User({ username, email, password });
     await user.save();
     res.status(201).send({message:'User created successfully'});
   } catch (err) {
@@ -34,8 +34,8 @@ router.post('/signin', async (req, res) => {
     if (!user || !(await user.comparePassword(password))) {
       return res.status(401).send({message:'Invalid credentials'});
     }
-
-    const token = jwt.sign({ id: user._id }, JWT_SECRET, { expiresIn: '1h' });
+    console.log(user)
+    const token = jwt.sign({ id: user._id, username: user.username }, JWT_SECRET, { expiresIn: '7d' });
     res.status(200).json({ token });
   } catch (err) {
     res.status(400).send({message:'Error signing in: ' + err.message});
